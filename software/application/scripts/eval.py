@@ -156,7 +156,7 @@ def main():
     env.close()
 
 
-def save_angle_plot(rows, path):
+def save_angle_plot(rows, path, max_deg=160.0, title=None):
     import math
 
     import matplotlib
@@ -164,18 +164,26 @@ def save_angle_plot(rows, path):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    fig = plt.figure(figsize=(5, 5))
+    fig = plt.figure(figsize=(5.4, 5.4))
     ax = fig.add_subplot(projection="polar")
+    ax.bar(math.pi, 115, width=math.radians(360 - 2 * max_deg), color="#d9d9d9", edgecolor="#999", hatch="//", lw=0.8)
+    ax.text(math.pi, 72, "no cubes here\nJ1 limit ±166°", ha="center", va="center", fontsize=8, color="#333",
+            bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="#999", lw=0.6))
     for lo, hi, k, rate in rows:
         if k == 0:
             continue
-        ax.bar(math.radians((lo + hi) / 2), rate, width=math.radians(hi - lo) * 0.95,
+        lo, hi = max(lo, -max_deg), min(hi, max_deg)
+        mid = math.radians((lo + hi) / 2)
+        ax.bar(mid, max(rate, 1), width=math.radians(hi - lo) * 0.95,
                color=plt.cm.RdYlGn(rate / 100), edgecolor="k", alpha=0.85)
-        ax.text(math.radians((lo + hi) / 2), max(rate, 15) + 12, f"{rate:.0f}%", ha="center", fontsize=9)
+        ax.text(mid, max(rate, 15) + 12, f"{rate:.0f}%", ha="center", va="center", fontsize=9, fontweight="bold")
     ax.set_ylim(0, 115)
     ax.set_yticklabels([])
-    ax.set_title("success by cube spawn angle\n(0 deg = in front of the robot)", fontsize=10)
-    fig.savefig(path, dpi=100, bbox_inches="tight")
+    ax.set_xticks([math.radians(a) for a in (0, 45, 90, 135, 160, 200, 225, 270, 315)])
+    ax.set_xticklabels(["0°\nfront", "45°", "90°\nleft", "135°", "160°", "−160°", "−135°", "−90°\nright", "−45°"],
+                       fontsize=8)
+    ax.set_title(title or "Success by cube angle around the robot", fontsize=11, pad=14)
+    fig.savefig(path, dpi=110, bbox_inches="tight")
     plt.close(fig)
     print(f"saved {path}")
 

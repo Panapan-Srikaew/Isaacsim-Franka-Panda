@@ -39,7 +39,7 @@
 
 <img src="../media/eval_by_angle_run17.png" width="300"> <img src="../media/eval_by_angle_run19.png" width="300">
 
-*Success by cube angle around the robot (0° = in front). Left: run 17. Right: run 19.*
+*Success by cube angle around the robot (0° = in front). Left: run 17. Right: run 19. The grey wedge directly behind the robot is not part of the task: joint 1 turns only ±166°, so cubes are placed within ±160°. The two sectors next to it therefore cover 135–160° only.*
 
 ![training curves run 19](../media/training/run19_polar_smooth_finetune_training_curves.png)
 
