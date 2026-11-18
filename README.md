@@ -1,11 +1,11 @@
-# Franka Panda 360° Pick & Place with Reinforcement Learning in Isaac Sim
+# Franka Panda All-Around Pick & Place with Reinforcement Learning in Isaac Sim
 
 A 7-DoF Franka Emika Panda arm learns, with PPO in NVIDIA Isaac Sim / Isaac Lab, to pick up a cube placed anywhere around it and place it on a random goal. The robot's mechanical model (URDF) is analysed in detail and linked to the learning results.
 
 
 ## Project overview
 
-- **Project name:** Franka Panda 360° Pick & Place with PPO in Isaac Sim / Isaac Lab
+- **Project name:** Franka Panda All-Around (±160°) Pick & Place with PPO in Isaac Sim / Isaac Lab
 - **Problem / purpose:** teach a robot arm to pick up a cube placed at a random spot all around it (±160°, 0.40–0.70 m from the base), carry it to a random goal and place it within 1.5 cm, moving slowly and smoothly (hand ≤ 0.25 m/s)
 - **Team:**
   - Panapan Srikaew (6730281821) – Isaac Sim setup and operation, running the simulation system
