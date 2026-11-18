@@ -17,7 +17,7 @@ software/application/
 │       ├── pick_place_env_cfg.py        scene, observations, rewards, terminations
 │       ├── config/franka/
 │       │   ├── ik_polar_360_env_cfg.py  main task: hand commanded in polar coordinates
-│       │   ├── ik_rel_360_env_cfg.py    360° task with x/y/z hand commands (run 13–17)
+│       │   ├── ik_rel_360_env_cfg.py    all-around task with x/y/z hand commands (run 13–17)
 │       │   ├── ik_rel_env_cfg.py        small task in front of the robot (run 8–12)
 │       │   ├── joint_pos_env_cfg.py     joint angle commands (run 1–7)
 │       │   └── agents/rsl_rl_ppo_cfg.py PPO settings
