@@ -13,7 +13,7 @@ A 7-DoF Franka Emika Panda arm learns, with PPO in NVIDIA Isaac Sim / Isaac Lab,
   - Panyawat Wipassuchanan (6730303021) – system design, model training and reward tuning
 - **Advisor:** Assoc. Prof. Dr. Ratchatin Chancharoen
 - **Status:** Complete (simulation)
-- **Last updated:** 2026-11-13
+- **Last updated:** 2026-11-18
 
 ## Repository structure
 
