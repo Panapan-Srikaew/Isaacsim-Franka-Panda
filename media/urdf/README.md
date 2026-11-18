@@ -6,6 +6,5 @@ Made with `scripts/urdf_analysis.py` (from the URDF only) and `scripts/record_jo
 |---|---|
 | `kinematic_tree.png` | Link–joint tree from the URDF |
 | `robot_frames_3d.png` | Frames and rotation axes of joints 1–7 at the start pose |
-| `joint_limits.png` | Range of each joint from the URDF |
 | `workspace.png` | Positions the hand can reach vs. the cube area |
-| `joint_usage.png` | Joint angles used by the trained robot and time spent near a limit |
+| `joint_usage.png` | URDF range of each joint, the part the trained robot uses, and time spent near a limit |

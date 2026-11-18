@@ -194,23 +194,42 @@ def analyse(Q, DQ, HP, HR, root_quat, outcome, steps, spawn_deg, dt, joints):
 
     qd = np.degrees(Q.reshape(-1, 7))
     qd = qd[~np.isnan(qd[:, 0])]
-    norm = (qd - lo) / (hi - lo)
+    from matplotlib.patches import Patch
+
+    p5, p50, p95 = (np.percentile(qd, q, axis=0) for q in (5, 50, 95))
     near = (np.minimum(qd - lo, hi - qd) < 5.0).mean(axis=0) * 100
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(12, 4.5), gridspec_kw={"width_ratios": [2, 1]})
-    a1.violinplot([norm[:, k] for k in range(7)], showextrema=True)
-    a1.axhline(0, color="C3")
-    a1.axhline(1, color="C3")
-    a1.set_xticks(range(1, 8))
-    a1.set_xticklabels([f"J{k + 1}" for k in range(7)])
-    a1.set_ylabel("position in URDF range (0 = lower, 1 = upper)")
-    a1.set_title("Joint angle distribution over all recorded steps")
-    a2.bar([f"J{k + 1}" for k in range(7)], near, color="C1")
-    for k, v in enumerate(near):
-        a2.text(k, v + 0.2, f"{v:.1f}", ha="center", fontsize=8)
-    a2.set_ylabel("% of time within 5° of a limit")
-    a2.set_title("Time spent near a URDF limit")
+    hot = near >= 10
+    fig, ax = plt.subplots(figsize=(10, 4.6))
+    for k in range(7):
+        ax.barh(k, hi[k] - lo[k], left=lo[k], height=0.62, color="#e6e9ec", edgecolor="#8a939b", lw=0.8)
+        for edge in (lo[k], hi[k] - 5):
+            ax.barh(k, 5, left=edge, height=0.62, color="#d62728", alpha=0.85, lw=0)
+        ax.barh(k, p95[k] - p5[k], left=p5[k], height=0.30, color="#e67e22" if hot[k] else "#2f6f9f")
+        ax.plot([p50[k]] * 2, [k - 0.22, k + 0.22], color="k", lw=2)
+        ax.text(lo[k] - 4, k, f"{lo[k]:.0f}°", ha="right", va="center", fontsize=8, color="#555")
+        ax.text(hi[k] + 4, k, f"{hi[k]:.0f}°", ha="left", va="center", fontsize=8, color="#555")
+        ax.text(262, k, f"{near[k]:.1f} %", ha="left", va="center", fontsize=11,
+                fontweight="bold" if hot[k] else "normal", color="#c0392b" if hot[k] else "#333")
+    ax.text(262, -0.9, "time within\n5° of a limit", ha="left", va="bottom", fontsize=9, color="#333")
+    ax.set_yticks(range(7))
+    ax.set_yticklabels([f"J{k + 1}" for k in range(7)], fontsize=11)
+    ax.set_xlim(-215, 300)
+    ax.set_ylim(6.5, -1.3)
+    ax.set_xticks(range(-180, 241, 60))
+    ax.axvline(0, color="#bbb", lw=0.6, zorder=0)
+    ax.set_xlabel("joint angle (degrees)")
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+    ax.set_title(f"How the trained robot uses each joint's URDF range ({n} episodes)", fontsize=12)
+    ax.legend(handles=[
+        Patch(facecolor="#e6e9ec", edgecolor="#8a939b", label="range allowed by the URDF"),
+        Patch(facecolor="#d62728", label="last 5° before a limit"),
+        Patch(facecolor="#2f6f9f", label="range used 90 % of the time"),
+        Patch(facecolor="#e67e22", label="same, joint often at its limit"),
+        plt.Line2D([], [], color="k", lw=2, label="typical angle (median)"),
+    ], loc="upper center", bbox_to_anchor=(0.45, -0.14), ncol=3, fontsize=9, frameon=False)
     fig.tight_layout()
-    fig.savefig(os.path.join(OUT, "joint_usage.png"), dpi=110)
+    fig.savefig(os.path.join(OUT, "joint_usage.png"), dpi=130, bbox_inches="tight")
     plt.close(fig)
 
     q1max = np.nanmax(np.abs(np.degrees(Q[:, :, 0])), axis=0)
@@ -246,11 +265,12 @@ def analyse(Q, DQ, HP, HR, root_quat, outcome, steps, spawn_deg, dt, joints):
     fig.savefig(os.path.join(OUT, "joint_velocity.png"), dpi=110)
     plt.close(fig)
     with open(os.path.join(OUT, "joint_stats.md"), "w", encoding="utf-8") as f:
-        f.write("| Joint | URDF range (°) | used min…max (°) | % time within 5° of limit | URDF vel limit (°/s) | max speed (°/s) | 99th pct (°/s) |\n")
-        f.write("|---|---|---|---|---|---|---|\n")
+        f.write(f"Joint angles of the trained policy recorded at every step of {n} episodes, compared with the URDF limits.\n")
+        f.write('"Used 90 % of the time" is the 5th to 95th percentile of the recorded angles.\n\n')
+        f.write("| Joint | URDF range (°) | Used 90 % of the time (°) | Typical angle, median (°) | % time within 5° of a limit |\n")
+        f.write("|---|---|---|---|---|\n")
         for k in range(7):
-            f.write(f"| J{k + 1} | {lo[k]:.0f} … {hi[k]:.0f} | {qd[:, k].min():.0f} … {qd[:, k].max():.0f} | {near[k]:.1f} | "
-                    f"{vmax[k]:.0f} | {mx[k]:.0f} | {p99[k]:.0f} |\n")
+            f.write(f"| J{k + 1} | {lo[k]:.0f} … {hi[k]:.0f} | {p5[k]:.0f} … {p95[k]:.0f} | {p50[k]:.0f} | {near[k]:.1f} |\n")
     print(open(os.path.join(OUT, "joint_stats.md"), encoding="utf-8").read())
 
 

@@ -1,2 +1,7 @@
 item,description,manufacturer,part_number,quantity,unit,unit_cost,currency,supplier,url,notes
-1,[Component or material],[Manufacturer],[Part number],1,pcs,,,[Supplier],,[Specification or selection note]
+1,Workstation PC (Windows 11),-,-,1,pcs,,,-,,Used for all training and evaluation
+2,GPU NVIDIA GeForce RTX 4070 Ti 12 GB,NVIDIA,RTX 4070 Ti,1,pcs,,,-,,Training 4096 parallel envs at ~2 s per PPO iteration
+3,NVIDIA Isaac Sim 6.0.1,NVIDIA,Isaac Sim 6.0.1,1,license,0,USD,NVIDIA,https://developer.nvidia.com/isaac/sim,Free for individual use; physics + rendering
+4,Isaac Lab 3.0,NVIDIA,Isaac Lab 3.0,1,license,0,USD,GitHub,https://github.com/isaac-sim/IsaacLab,BSD-3 open source; RL environment framework
+5,rsl-rl-lib 5.0.1,ETH Zurich RSL,rsl-rl-lib,1,license,0,USD,PyPI,https://pypi.org/project/rsl-rl-lib/,PPO implementation
+6,Franka Panda robot model (URDF),Franka Emika,franka_description,1,model,0,USD,GitHub,https://github.com/frankaemika/franka_ros,Apache 2.0; simulated only - no physical robot used

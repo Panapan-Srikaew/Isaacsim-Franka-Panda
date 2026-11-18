@@ -83,8 +83,6 @@ Multiplying the `origin` transforms and joint rotations from the base to the han
 | `panda_finger_joint1` | prismatic | hand → left finger | 0 … 4 cm | 0.2 m/s | 20 N |
 | `panda_finger_joint2` | prismatic (mimic) | hand → right finger | 0 … 4 cm | 0.2 m/s | 20 N |
 
-![joint limits](../../media/urdf/joint_limits.png)
-
 **Mechanical notes**
 - Joints 1–4 (shoulder, elbow) carry 87 Nm, joints 5–7 (wrist) only 12 Nm: the joints near the base hold the weight of the whole arm, the wrist only the hand.
 - Joints 4 and 6 have **one-sided ranges**: the elbow bends one way only.
@@ -146,17 +144,23 @@ panda_arm_hand.urdf ──(URDF Importer)──► robot file (USD) ──(Isaac
 The further behind the robot the cube is, the more joint 1 must turn. Near ±160° it needs almost its full 166°. This is where the final model is weakest (93–96 % success, compared with 98–100 % elsewhere).
 
 ### 6.2 Joints 4 and 6 work at their limits
+The joint angles of the trained robot were recorded at every step of 256 episodes (`record_joints.py`) and compared with the URDF limits.
+
 ![joint usage](../../media/urdf/joint_usage.png)
 
-| Joint | URDF range | Time within 5° of a limit |
-|---|---|---|
-| J1 | −166 … 166° | 0.4 % |
-| J2 | −101 … 101° | 1.5 % |
-| J3 | −166 … 166° | 0.0 % |
-| **J4** | −176 … −4° | **20.1 %** |
-| J5 | −166 … 166° | 0.4 % |
-| **J6** | −1 … 215° | **67.4 %** |
-| J7 | −166 … 166° | 1.0 % |
+**How to read the figure:** each row is one joint. The grey bar is the range the URDF allows, with the last 5° before each limit in red. The coloured bar is where the joint stays 90 % of the time, and the black mark is its typical angle. The number on the right is the share of time the joint spends in the red zone. Orange rows are the joints that often sit at a limit.
+
+| Joint | URDF range | Used 90 % of the time | Typical angle | Time within 5° of a limit |
+|---|---|---|---|---|
+| J1 | −166 … 166° | −90 … 109° | 4° | 0.4 % |
+| J2 | −101 … 101° | −58 … 61° | 29° | 1.5 % |
+| J3 | −166 … 166° | −44 … 47° | −3° | 0.0 % |
+| **J4** | −176 … −4° | **−176 … −108°** | −152° | **20.1 %** |
+| J5 | −166 … 166° | −45 … 77° | −1° | 0.4 % |
+| **J6** | −1 … 215° | **137 … 215°** | 215° | **67.4 %** |
+| J7 | −166 … 166° | −7 … 62° | 35° | 1.0 % |
+
+Five joints stay well inside their range. J4 and J6 are the exception: J4 works at its lower end, and J6 sits on its upper limit (215°) for most of the task.
 
 To pick a cube from the table with the hand pointing down, the arm bends the elbow (J4) fully and pushes the wrist (J6) to 215°. In simulation this is fine; **on a real robot** the Franka would stop near a joint limit, so this must be fixed first.
 

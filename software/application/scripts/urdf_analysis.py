@@ -303,27 +303,6 @@ def plot_frames_3d(joints):
     plt.close(fig)
 
 
-def plot_limits(joints):
-    rev = [j for j in joints if j["type"] == "revolute"]
-    fig, ax = plt.subplots(figsize=(8, 4))
-    for k, j in enumerate(rev):
-        lo, hi = math.degrees(j["lower"]), math.degrees(j["upper"])
-        ax.barh(k, hi - lo, left=lo, color="#9ecae1", edgecolor="k")
-        ax.plot(math.degrees(HOME[k]), k, "kD", ms=6)
-        ax.text(hi + 4, k, f"{lo:.0f}…{hi:.0f}°", va="center", fontsize=8)
-    ax.plot([], [], "kD", label="home pose of the task")
-    ax.set_yticks(range(len(rev)))
-    ax.set_yticklabels([f"J{k + 1}" for k in range(len(rev))])
-    ax.invert_yaxis()
-    ax.axvline(0, color="0.6", lw=0.8)
-    ax.set_xlim(-200, 260)
-    ax.set_xlabel("joint angle (deg)")
-    ax.set_title("Joint ranges from the URDF <limit lower/upper>")
-    ax.legend(loc="lower right", fontsize=8)
-    fig.savefig(os.path.join(OUT, "joint_limits.png"), dpi=130, bbox_inches="tight")
-    plt.close(fig)
-
-
 def plot_workspace(joints, rows, n=40000, seed=1):
     rng = np.random.default_rng(seed)
     rev = [j for j in joints if j["type"] == "revolute"]
@@ -382,7 +361,6 @@ def main():
     fk_check(joints, rows)
     plot_tree(joints)
     plot_frames_3d(joints)
-    plot_limits(joints)
     reach, rmax = plot_workspace(joints, rows)
     print(f"max reach from shoulder {reach:.3f} m, max horizontal TCP radius {rmax:.3f} m")
     print(f"outputs in {OUT}")

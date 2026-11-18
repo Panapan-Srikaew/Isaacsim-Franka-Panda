@@ -1,9 +1,12 @@
-| Joint | URDF range (°) | used min…max (°) | % time within 5° of limit | URDF vel limit (°/s) | max speed (°/s) | 99th pct (°/s) |
-|---|---|---|---|---|---|---|
-| J1 | -166 … 166 | -166 … 166 | 0.4 | 125 | 125 | 87 |
-| J2 | -101 … 101 | -101 … 101 | 1.5 | 125 | 125 | 86 |
-| J3 | -166 … 166 | -153 … 97 | 0.0 | 125 | 125 | 75 |
-| J4 | -176 … -4 | -176 … -4 | 20.1 | 125 | 125 | 58 |
-| J5 | -166 … 166 | -166 … 121 | 0.4 | 150 | 155 | 148 |
-| J6 | -1 … 215 | 36 … 215 | 67.4 | 150 | 132 | 108 |
-| J7 | -166 … 166 | -166 … 166 | 1.0 | 150 | 150 | 123 |
+Joint angles of the trained policy (run 19) recorded at every step of 256 episodes, compared with the URDF limits.
+"Used 90 % of the time" is the 5th to 95th percentile of the recorded angles.
+
+| Joint | URDF range (°) | Used 90 % of the time (°) | Typical angle, median (°) | % time within 5° of a limit |
+|---|---|---|---|---|
+| J1 | -166 … 166 | -90 … 109 | 4 | 0.4 |
+| J2 | -101 … 101 | -58 … 61 | 29 | 1.5 |
+| J3 | -166 … 166 | -44 … 47 | -3 | 0.0 |
+| J4 | -176 … -4 | -176 … -108 | -152 | 20.1 |
+| J5 | -166 … 166 | -45 … 77 | -1 | 0.4 |
+| J6 | -1 … 215 | 137 … 215 | 215 | 67.4 |
+| J7 | -166 … 166 | -7 … 62 | 35 | 1.0 |
